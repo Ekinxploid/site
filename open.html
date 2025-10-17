@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicFlow - Sunucu Başlatıcı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .warning strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .warning p {
+            color: #856404;
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        .method {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .method h3 {
+            color: #495057;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-left: 35px;
+            position: relative;
+            color: #495057;
+        }
+        
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .link-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Muzo</h1>
+        <p class="subtitle">Spotify Tarzı YouTube Müzik Platformu - Müziğin Yeni Adresi</p>
+        
+        <div class="warning">
+            <strong>⚠️ Önemli Uyarı</strong>
+            <p>Bu dosyayı çift tıklayarak açtınız. YouTube API'sinin çalışması için projeyi bir HTTP sunucusu üzerinden açmanız gerekiyor.</p>
+        </div>
+        
+        <div class="method">
+            <h3><span class="badge">KOLAY</span> VS Code ile</h3>
+            <ol class="steps">
+                <li>VS Code'u açın</li>
+                <li>"Live Server" extension'ını kurun</li>
+                <li>index.html'e sağ tıklayın</li>
+                <li>"Open with Live Server" seçin</li>
+            </ol>
+        </div>
+        
+        <div class="method">
+            <h3>Python ile</h3>
+            <p>Terminal'de proje klasöründe:</p>
+            <div class="code">python -m http.server 8080</div>
+            <p>Sonra tarayıcıda: <strong>http://localhost:8080</strong></p>
+        </div>
+        
+        <div class="method">
+            <h3>PHP ile</h3>
+            <div class="code">php -S localhost:8080</div>
+            <p>Sonra tarayıcıda: <strong>http://localhost:8080</strong></p>
+        </div>
+        
+        <div class="method">
+            <h3>Node.js ile (npx)</h3>
+            <div class="code">npx http-server -p 8080 -o</div>
+            <p>Otomatik olarak tarayıcıda açılır.</p>
+        </div>
+        
+        <a href="https://github.com/ritwickdey/vscode-live-server" target="_blank" class="link-button">
+            VS Code Live Server İndir
+        </a>
+    </div>
+    
+    <script>
+        // Eğer HTTP sunucusu üzerinden açılmışsa yönlendir
+        if (window.location.protocol !== 'file:') {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
+

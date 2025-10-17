@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Muzo - Spotify Tarzı YouTube Müzik Platformu">
+    <title>Muzo - Müziğin Yeni Adresi</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-compact-disc"></i>
+                </div>
+                <span class="logo-text">Muzo</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-item" data-view="home">
+                <i class="fas fa-home"></i>
+                <span>Ana Sayfa</span>
+            </button>
+            <button class="nav-item active" data-view="search">
+                <i class="fas fa-search"></i>
+                <span>Ara</span>
+            </button>
+            <button class="nav-item" data-view="favorites">
+                <i class="fas fa-heart"></i>
+                <span>Beğenilen Şarkılar</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-playlists">
+            <div class="playlist-header">
+                <span>ÇALMA LİSTELERİN</span>
+                <button class="create-playlist-btn" id="createPlaylistBtn" title="Playlist Oluştur">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            
+            <div id="userPlaylists" class="user-playlists">
+                <!-- Playlists will be loaded here -->
+            </div>
+        </div>
+
+        <!-- User Profile -->
+        <div class="sidebar-user">
+            <div class="user-info">
+                <img id="userAvatar" src="uploads/profiles/default-avatar.png" alt="Avatar">
+                <div class="user-details">
+                    <div class="user-name" id="userName">Kullanıcı</div>
+                    <div class="user-email" id="userEmail">user@muzo.com</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Çıkış Yap">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </aside>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section class="section-view hidden" id="homeSection">
+            <div class="content-header">
+                <h1>Merhaba, <span id="homeUserName">Kullanıcı</span></h1>
+                <p class="header-subtitle">Bugün ne dinlemek istersin?</p>
+            </div>
+
+            <div class="home-section-title">
+                <h2>Popüler Müzikler</h2>
+            </div>
+            <div class="content-grid" id="homeTrending">
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Popüler şarkılar yükleniyor...</p>
+                </div>
+            </div>
+
+            <div class="home-section-title">
+                <h2>Playlistlerin</h2>
+            </div>
+            <div class="content-grid" id="homeRecentPlaylists">
+                <div class="empty-state-small">
+                    <i class="fas fa-music"></i>
+                    <p>Henüz playlist yok</p>
+                </div>
+            </div>
+
+            <div class="home-section-title">
+                <h2>Beğendiğin Şarkılar</h2>
+            </div>
+            <div class="content-grid-horizontal" id="homeFavorites">
+                <p style="color: #b3b3b3; padding: 20px;">Henüz favori şarkın yok</p>
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section class="section-view" id="searchSection">
+            <div class="content-header">
+                <h1>Ara</h1>
+                <p class="header-subtitle">Ne dinlemek istersin?</p>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Sanatçı, şarkı veya podcast ara" autocomplete="off">
+                    <button id="clearSearch" class="clear-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <div class="content-grid" id="searchResults">
+                <div class="welcome-state">
+                    <i class="fas fa-search"></i>
+                    <h2>Aramaya başla</h2>
+                    <p>Favori şarkılarını, sanatçılarını bul.</p>
+                </div>
+            </div>
+
+            <button id="loadMoreBtn" class="load-more-btn" style="display: none;">
+                Daha Fazla Göster
+            </button>
+        </section>
+
+        <!-- Favorites Section -->
+        <section class="section-view hidden" id="favoritesSection">
+            <div class="content-header">
+                <div class="header-content-flex">
+                    <div class="header-with-icon">
+                        <div class="header-icon-wrapper">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <h1>Beğenilen Şarkılar</h1>
+                            <p class="header-subtitle" id="favoritesCount">0 şarkı</p>
+                        </div>
+                    </div>
+                    <button id="clearFavorites" class="btn-outline">
+                        <i class="fas fa-trash"></i>
+                        Tümünü Temizle
+                    </button>
+                </div>
+            </div>
+            <div class="content-grid" id="favoritesList">
+                <div class="empty-state">
+                    <i class="fas fa-heart"></i>
+                    <p>Henüz beğenilen şarkı yok</p>
+                    <span>Beğendiğin şarkılar burada görünecek</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Queue Section -->
+        <section class="section-view hidden" id="queueSection">
+            <div class="content-header">
+                <div class="header-content-flex">
+                    <div class="header-with-icon">
+                        <div class="header-icon-wrapper queue">
+                            <i class="fas fa-list-ul"></i>
+                        </div>
+                        <div>
+                            <h1>Çalma Listesi</h1>
+                            <p class="header-subtitle" id="queueHeaderCount">0 şarkı</p>
+                        </div>
+                    </div>
+                    <button id="clearQueue" class="btn-outline">
+                        <i class="fas fa-trash"></i>
+                        Tümünü Temizle
+                    </button>
+                </div>
+            </div>
+            <div class="content-grid" id="queueList">
+                <div class="empty-state">
+                    <i class="fas fa-list-ul"></i>
+                    <p>Kuyruk boş</p>
+                    <span>Şarkıları kuyruğa ekleyerek çalmaya başla</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Playlist Detail Section -->
+        <section class="section-view hidden" id="playlistDetailSection">
+            <div class="content-header">
+                <div class="header-content-flex">
+                    <div class="header-with-icon">
+                        <div class="header-icon-wrapper" id="playlistDetailIcon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div>
+                            <h1 id="playlistDetailName">Playlist</h1>
+                            <p class="header-subtitle">
+                                <span id="playlistDetailCount">0 şarkı</span> • 
+                                <span id="playlistDetailVisibility">Herkese Açık</span>
+                            </p>
+                            <p class="header-subtitle" id="playlistDetailDescription"></p>
+                        </div>
+                    </div>
+                    <div class="playlist-actions">
+                        <button id="togglePlaylistVisibility" class="btn-outline" title="Görünürlüğü Değiştir">
+                            <i class="fas fa-eye"></i>
+                            <span id="visibilityText">Herkese Açık</span>
+                        </button>
+                        <button id="editPlaylistBtn" class="btn-outline" title="Düzenle">
+                            <i class="fas fa-edit"></i>
+                            Düzenle
+                        </button>
+                        <button id="deletePlaylistBtn" class="btn-outline btn-danger" title="Sil">
+                            <i class="fas fa-trash"></i>
+                            Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist Search (Şarkı eklemek için) -->
+            <div class="playlist-search-section">
+                <h3>Şarkı Ekle</h3>
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="playlistSearchInput" placeholder="Bu playlist'e eklemek için şarkı ara..." autocomplete="off">
+                    <button id="clearPlaylistSearch" class="clear-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="playlist-search-results" id="playlistSearchResults"></div>
+            </div>
+
+            <div class="playlist-tracks-title">
+                <h3>Şarkılar</h3>
+            </div>
+            <div class="content-grid" id="playlistDetailTracks">
+                <div class="empty-state">
+                    <i class="fas fa-music"></i>
+                    <p>Playlist boş</p>
+                    <span>Yukarıdan arama yaparak şarkı ekle</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Profile Section -->
+        <section class="section-view hidden" id="profileSection">
+            <div class="content-header">
+                <div class="header-content-flex">
+                    <div class="header-with-icon">
+                        <div class="profile-header-avatar">
+                            <img id="profilePageAvatar" src="uploads/profiles/default-avatar.png" alt="Avatar">
+                        </div>
+                        <div>
+                            <p class="profile-label">PROFİL</p>
+                            <h1 id="profilePageName">Kullanıcı</h1>
+                            <p class="header-subtitle">
+                                <span id="profilePagePlaylists">0 playlist</span> • 
+                                <span id="profilePageFavorites">0 beğeni</span>
+                            </p>
+                        </div>
+                    </div>
+                    <button id="editProfilePageBtn" class="btn-outline">
+                        <i class="fas fa-edit"></i>
+                        Profili Düzenle
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="statPlaylists">0</div>
+                    <div class="stat-label">Playlist</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statFavorites">0</div>
+                    <div class="stat-label">Beğenilen Şarkı</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statQueue">0</div>
+                    <div class="stat-label">Kuyruktaki Şarkı</div>
+                </div>
+            </div>
+
+            <div class="home-section-title">
+                <h2>Playlistlerin</h2>
+            </div>
+            <div class="content-grid" id="profilePlaylists">
+                <!-- User playlists -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Player Bar -->
+    <div class="player-bar" id="playerBar">
+        <!-- Now Playing Info -->
+        <div class="now-playing">
+            <div class="track-thumbnail">
+                <img id="currentThumbnail" src="" alt="Track Thumbnail">
+                <div class="playing-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="track-info">
+                <div class="track-title" id="currentTitle">Şarkı seçilmedi</div>
+                <div class="track-artist" id="currentArtist">-</div>
+            </div>
+            <button class="favorite-btn" id="currentFavoriteBtn" title="Favorilere Ekle">
+                <i class="far fa-heart"></i>
+            </button>
+        </div>
+
+        <!-- Player Controls -->
+        <div class="player-controls">
+            <div class="control-buttons">
+                <button id="shuffleBtn" class="control-btn" title="Karışık Çal">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button id="prevBtn" class="control-btn" title="Önceki">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="playPauseBtn" class="control-btn play-btn" title="Oynat/Duraklat">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="nextBtn" class="control-btn" title="Sonraki">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button id="repeatBtn" class="control-btn" title="Tekrarla">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <span class="time-current" id="timeCurrent">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-filled" id="progressFilled"></div>
+                    <div class="progress-handle" id="progressHandle"></div>
+                </div>
+                <span class="time-duration" id="timeDuration">0:00</span>
+            </div>
+        </div>
+
+        <!-- Volume Control -->
+        <div class="volume-control">
+            <button id="muteBtn" class="control-btn" title="Ses Aç/Kapat">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="volume-slider">
+                <input type="range" id="volumeSlider" min="0" max="100" value="70">
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube Player (Hidden) -->
+    <div id="youtubePlayerContainer" style="display: none;">
+        <div id="youtubePlayer"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Now Playing Expanded Card (Spotify Style) -->
+    <div class="now-playing-overlay" id="nowPlayingOverlay">
+        <div class="now-playing-card">
+            <button class="close-card-btn" id="closeCardBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="card-content">
+                <div class="card-artwork">
+                    <img id="cardArtwork" src="" alt="Album Art">
+                    <div class="card-playing-animation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <div class="card-info">
+                    <h2 id="cardTitle">Şarkı Adı</h2>
+                    <p id="cardArtist">Sanatçı</p>
+                </div>
+                
+                <div class="card-controls">
+                    <button class="card-control-btn" id="cardShuffleBtn" title="Karışık">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="card-control-btn" id="cardPrevBtn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="card-control-btn card-play-btn" id="cardPlayBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="card-control-btn" id="cardNextBtn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="card-control-btn" id="cardRepeatBtn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="card-progress">
+                    <span class="card-time-current" id="cardTimeCurrent">0:00</span>
+                    <div class="card-progress-bar" id="cardProgressBar">
+                        <div class="card-progress-filled" id="cardProgressFilled"></div>
+                    </div>
+                    <span class="card-time-duration" id="cardTimeDuration">0:00</span>
+                </div>
+                
+                <div class="card-actions">
+                    <button class="card-action-btn" id="cardFavoriteBtn">
+                        <i class="far fa-heart"></i>
+                        <span>Beğen</span>
+                    </button>
+                    <button class="card-action-btn" id="cardQueueBtn">
+                        <i class="fas fa-list-ul"></i>
+                        <span>Kuyruğa Ekle</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Playlist Modal -->
+    <div class="modal-overlay" id="createPlaylistModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Yeni Playlist Oluştur</h2>
+                <button class="modal-close" id="closePlaylistModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="createPlaylistForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="playlistName">Playlist Adı</label>
+                        <input type="text" id="playlistName" placeholder="Benim Playlistim" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="playlistDescription">Açıklama (Opsiyonel)</label>
+                        <textarea id="playlistDescription" placeholder="Playlistin hakkında birşeyler yaz..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group-checkbox">
+                        <input type="checkbox" id="playlistPublic" checked>
+                        <label for="playlistPublic">Herkese açık yap</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelPlaylistBtn">İptal</button>
+                    <button type="submit" class="btn-primary">Oluştur</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Playlist Modal -->
+    <div class="modal-overlay" id="editPlaylistModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Playlist Düzenle</h2>
+                <button class="modal-close" id="closeEditPlaylistModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editPlaylistForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editPlaylistName">Playlist Adı</label>
+                        <input type="text" id="editPlaylistName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPlaylistDescription">Açıklama</label>
+                        <textarea id="editPlaylistDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelEditPlaylistBtn">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Edit Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Profil Düzenle</h2>
+                <button class="modal-close" id="closeProfileModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="profileForm">
+                <div class="modal-body">
+                    <div class="profile-avatar-section">
+                        <img id="profileAvatarPreview" src="uploads/profiles/default-avatar.png" alt="Avatar">
+                        <div class="avatar-upload">
+                            <label for="profileImageInput" class="btn-secondary">
+                                <i class="fas fa-camera"></i>
+                                Fotoğraf Değiştir
+                            </label>
+                            <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileDisplayName">İsim</label>
+                        <input type="text" id="profileDisplayName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileEmail">Email (Değiştirilemez)</label>
+                        <input type="email" id="profileEmail" disabled>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelProfileBtn">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add to Playlist Context Menu -->
+    <div class="context-menu" id="addToPlaylistMenu">
+        <div class="context-menu-header">Playlist'e Ekle</div>
+        <div class="context-menu-items" id="playlistMenuItems">
+            <!-- Playlists will be loaded here -->
+        </div>
+        <div class="context-menu-divider"></div>
+        <button class="context-menu-item" id="createNewPlaylistFromMenu">
+            <i class="fas fa-plus"></i>
+            Yeni Playlist Oluştur
+        </button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+    
+    <!-- Auth Check -->
+    <script>
+        // Check if user is logged in
+        const token = localStorage.getItem('muzo_token');
+        if (!token) {
+            window.location.href = 'auth.html';
+        }
+        
+        // Load user info
+        const user = JSON.parse(localStorage.getItem('muzo_user') || '{}');
+        if (user.display_name) {
+            document.getElementById('userName').textContent = user.display_name;
+            document.getElementById('userEmail').textContent = user.email;
+        }
+    </script>
+</body>
+</html>
+
